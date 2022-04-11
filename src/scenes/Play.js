@@ -19,7 +19,7 @@ class Play extends Phaser.Scene {
       this.add.rectangle(0, 0, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0,0);
       this.add.rectangle(0, game.config.height - borderUISize, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0,0);
       this.add.rectangle(0,0,borderUISize, game.config.height, 0xFFFFFF).setOrigin(0,0);
-      this.add.rectangle(0, game.config.width - borderUISize, 0, borderUISize, game.config.height, 0xFFFFFF).setOrigin(0,0);
+      this.add.rectangle(game.config.width - borderUISize, 0, borderUISize, game.config.height, 0xFFFFFF).setOrigin(0,0);
       //add the rocket
       this.p1Rocket = new Rocket(this, game.config.width/2, game.config.height - borderUISize - borderPadding, 'rocket').setOrigin(0.5, 0);
       //define keys
@@ -37,6 +37,22 @@ class Play extends Phaser.Scene {
          frames: this.anims.generateFrameNumbers('explosion', { start:0, end:9, first:0}), 
          frameRate: 30
       });
+      // initialize score
+      this.p1Score = 0;
+      //display score
+      let scoreConfig = {
+         fontFamily: 'Courier',
+         fontSize: '28px',
+         backgroundColor: '#F3B141',
+         color: '#843605',
+         align: 'right',
+         padding: {
+            top: 5,
+            bottom: 5,
+         },
+         fixedWidth:100
+      }
+      this.scoreLeft = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding*2, this.p1Score, scoreConfig);
    }
 
    update() {
@@ -71,7 +87,7 @@ class Play extends Phaser.Scene {
    }
 
    shipExplode(ship){
-      //hide shp
+      //hide ship
       ship.alpha = 0;
       //create explosion
       let boom = this.add.sprite(ship.x, ship.y, 'explosion').setOrigin(0,0);
@@ -81,6 +97,9 @@ class Play extends Phaser.Scene {
          ship.alpha = 1;
          boom.destroy();
       });
+      //score add and reprint
+      this.p1Score+=ship.points;
+      this.scoreLeft.text = this.p1Score;
    }
 }
 
